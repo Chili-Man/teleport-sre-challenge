@@ -61,7 +61,16 @@ Description of the API action goes here.
 ...
 ```
 
-All responses shall be formated in JSON for easier machine parsing.
+All responses and request bodies shall be formated in JSON.
+
+
+In general, all non 2XX/3XX statuses shall return a response as follows:
+
+```json
+{
+  "message" : "Message explaining the status."
+}
+```
 
 
 #### **`GET`** `/deployments[/{namespace}]`
@@ -90,5 +99,63 @@ Lists all of the deployments of the Kubernetes cluster by namespace
 
 | HTTP Status Code | Description |
 | ---------------- | ----------- |
-| 200 | Successfully retrieved the list of deployments
-| 404 | The provided namespace does not exist
+| 200 | Successfully retrieved the list of deployments |
+| 404 | The provided namespace does not exist |
+
+
+#### **`GET`** `/deployments/{namespace}/{deployment}/replicas`
+Retrieves the deployment replica count by name in the provided namespace.
+
+*Parameters*
+| Path Paramater | Description | Required |
+| -------------- | ----------- | -------- |
+| `namespace`    | The deployment namespace. | `true` |
+| `deployment`   | The name of the deployment. | `true` |
+
+
+*Response*
+```json
+{
+  "namespace": "default",
+  "deployment": "cool",
+  "replicas": 7
+}
+```
+
+| HTTP Status Code | Description |
+| ---------------- | ----------- |
+| 200 | Successfully retrieved the replica count for the deployment |
+| 404 | The provided namespace or deployment does not exist. |
+
+
+#### **`PUT`** `/deployments/{namespace}/{deployment}/replicas`
+Update the replica count for the given deployment.
+
+*Parameters*
+| Path Paramater | Description | Required |
+| -------------- | ----------- | -------- |
+| `namespace`    | The deployment namespace. | `true` |
+| `deployment`   | The name of the deployment. | `true` |
+
+| Body Paramater | Description | Required |
+| -------------- | ----------- | -------- |
+| `replicas`    | The new number of replicas for the deployment. | `true` |
+
+```json
+{
+  "replicas": 20
+}
+```
+
+*Response*
+```json
+{
+  "message": "Successfully updated the replica count for the deployment"
+}
+```
+
+| HTTP Status Code | Description |
+| ---------------- | ----------- |
+| 204 | Successfully updated the replica count for the deployment |
+| 400 | Incorrect value for the number of replicas was set. |
+| 404 | The provided namespace or deployment does not exist. |
