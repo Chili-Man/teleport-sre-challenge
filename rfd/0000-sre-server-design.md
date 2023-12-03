@@ -36,29 +36,59 @@ expand the scope to other Kubernetes resources as well.
 The APIs are documented formatted in the following structure:
 
 ```
-**`VERB`** `/{{service}}/{{action}}`
+**`VERB`** `/{service}/{subpaths}...`
 
 Description of the API action goes here.
 
 *Parameters*
-| Query Paramater | Description |
-| --------------- | ----------- |
-| `foo`           | Parameter description for `foo` |
-| `yeet`          | The distance to yeet it for |
+| [Query | Body | Path] Paramater | Description | Required |
+| --------------- | ----------- | -------- |
+| `foo`           | Parameter description for `foo` | `true` |
+| `yeet`          | The distance to yeet it for. Defaults to 50 meters | `false` |
 
 
 *Response*
+
 `` ```json
 {
   "successful": true
 }
 ``` ``
 
+| HTTP Status Code | Description |
+| ---------------- | ----------- |
+| 200 | Successful request
+...
 ```
 
 All responses shall be formated in JSON for easier machine parsing.
 
 
-#### **`GET`** `/deployments`
+#### **`GET`** `/deployments[/{namespace}]`
+Lists all of the deployments of the Kubernetes cluster by namespace
 
-Lists all of the deployments of the Kubernetes cluster.
+*Parameters*
+| Path Paramater | Description | Required |
+| -------------- | ----------- | -------- |
+| `namespace`    | The namespace to limit the scope of the deployments to list. Omitting it the namespace will retrieve all the deployments of cluster.  | `false` |
+
+
+*Response*
+```json
+[
+  {
+    "namespace": "default",
+    "deployments": [
+      "foo",
+      "yeet",
+      ...
+    ]
+  },
+  ...
+]
+```
+
+| HTTP Status Code | Description |
+| ---------------- | ----------- |
+| 200 | Successfully retrieved the list of deployments
+| 404 | The provided namespace does not exist
