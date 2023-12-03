@@ -48,12 +48,11 @@ Description of the API action goes here.
 
 
 *Response*
-\`\`\`json
+`` ```json
 {
   "successful": true
 }
-\`\`\`
-
+``` ``
 
 ```
 
