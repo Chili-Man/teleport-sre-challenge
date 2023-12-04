@@ -129,7 +129,7 @@ Update the replica count for the given deployment.
 
 | Body Parameter | Description | Required |
 | -------------- | ----------- | -------- |
-| `replicas`    | The new number of replicas for the deployment. | `true` |
+| `replicas`    | The new number of replicas for the deployment. Must be >= 0. | `true` |
 
 ```json
 {
