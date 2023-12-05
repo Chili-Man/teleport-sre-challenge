@@ -202,6 +202,102 @@ security best practices.
 
 
 ### Development
+For any changes, make sure to add in entry into the `CHANGELOG.md`, we follow
+the format as specified by
+[keep a changelog](https://keepachangelog.com/en/1.1.0/). We follow
+[SemVer](https://semver.org/) for versioning.
 
 
-### Build, Release, and Delivery
+#### Tooling
+After git cloning the repository, you'll need to have the following tools
+installed for local development and testing:
+
+- [go](https://go.dev/doc/install) (1.21+) - for building the server
+- make - for local task automation
+- [docker](https://docs.docker.com/engine/install/) - for building the server
+- openssl - for generating TLS certificates for development and testing purposes (only needed if creating a new key pair, otherwise use existing set in the repository)
+- [minikube](https://minikube.sigs.k8s.io/docs/start/) (or similar tool) - for running a local kubernetes cluster to test the server on
+
+#### Running
+Once the above requisite tooling has been setup, within the root of this
+repository, you can run the server locally by (faster development turnaround,
+but less consistency with deployment environment):
+
+```shell
+go run .
+```
+
+For running the server in a reproducible and consistent manner that is more
+production like:
+
+```shell
+make local-run
+```
+
+This will build the server into a container and then run it through there.
+
+
+#### Testing
+For testing locally, you can run:
+
+```shell
+go test -v
+```
+
+This will run all of the go unit tests.
+
+
+To run the integration tests, use:
+
+```shell
+make integration-tests
+```
+
+which will run integration tests against the local kubernetes cluster.
+
+All of the tests will also be ran in a GitHub actions from a container for
+ensuring reproducibility.
+
+
+### Deliverables
+#### Build
+For reproducible and consistent builds, we make use of containers. You can build
+it through:
+
+```shell
+make build
+```
+Which will create a ready to use docker container of the server.
+
+
+#### Release
+If you need to build a release of the server as well, you can run:
+
+```shell
+make release
+```
+
+Which will build binaries of the server in addition to the container image.
+
+Releases shall be created through GitHub Actions on a merge to the main branch.
+This requires that the `CHANGELOG.md` be appropriately updated in the pull
+request that got merged so that the new version is automatically built.
+
+
+#### Local Deployment
+To deploy to your local Kubernetes cluster (assuming minikube), you can
+run the following command to do so:
+
+```shell
+make local-deploy
+```
+
+Which shall build the server within the minikube VM so that it is made available
+for deployment via the included Helm chart.
+
+
+To clean up the deployment, you can run:
+
+```shell
+make local-deploy
+```
