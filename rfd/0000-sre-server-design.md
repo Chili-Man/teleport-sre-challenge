@@ -151,6 +151,56 @@ Update the replica count for the given deployment.
 | 404 | The provided namespace or deployment does not exist. |
 
 
+
+#### **`GET`** `/health/ready`
+Health check endpoint that verifies the server has access to the Kubernetes API.
+Should this health check fail, the particular server should be removed from
+having requests directed to it.
+
+Note that the health check endpoints should generally not be exposed, but should
+be safe in the context of internal use only.
+
+*Parameters*
+None.
+
+*Response*
+```json
+{
+  "status": "ready"
+}
+```
+
+| HTTP Status Code | Description |
+| ---------------- | ----------- |
+| 200 | The server is able to successfully communicate with the Kubernetes API |
+| 503 | The server is having issues communicating with the Kubernetes API |
+
+
+#### **`GET`** `/health/live`
+Health check endpoint that verifies the server is alive and responsive
+(i.e. not timing out). Should this health check fail, it may signify that the
+server has become unresponsive and should indicate reason to restart the server
+process.
+
+Note that the health check endpoints should generally not be exposed, but should
+be safe in the context of internal use only.
+
+*Parameters*
+None.
+
+*Response*
+```json
+{
+  "alive": true
+}
+```
+
+| HTTP Status Code | Description |
+| ---------------- | ----------- |
+| 200 | The server is alive and responsive to requests. |
+| 503 | The server process may have startup or configuration issues |
+
+
 ### Security
 We make use of mTLS for secured communications between the client and the
 `sre-server`. With mTLS, both the server and client verify each other's
