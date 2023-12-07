@@ -44,6 +44,10 @@ In general, all non 2XX/3XX statuses shall return a response as follows:
 }
 ```
 
+We limit the scope of the RBAC permissions on the `Deployments` resource to only
+what is needed; we try to follow the principle of least privilege for enhanced
+security.
+
 
 #### **`GET`** `/deployments[/{namespace}]`
 Lists all of the deployments of the Kubernetes cluster by namespace
@@ -202,6 +206,34 @@ None.
 
 
 ### Security
+#### Kubernetes RBAC Permissions
+As the `sre-server` will be communicating with a Kubernetes API, it will need
+sufficient RBAC priveleges to communicate with Kubernetes. At a minimum, for the
+initial implementation, it will need a Kubernetes `ClusterRole` (since it needs
+cluster-wide access to all namespaces to see the `Deployments`) with the
+following permissions:
+
+```yaml
+rules:
+  # For listing and retrieving deployments
+  - apiGroups: ["apps"]
+    resources:
+      - deployments
+    verbs:
+      - get
+      - list
+      - watch
+
+  # For updating the number of replicas on the deployment
+  - apiGroups:
+      - apps
+    resources:
+      - deployments/scale
+    verbs:
+      - patch
+```
+
+#### Authentication
 We make use of mTLS for secured communications between the client and the
 `sre-server`. With mTLS, both the server and client verify each other's
 certificates (authenticate). For this initial design, in order to simplify
@@ -266,7 +298,7 @@ installed for local development and testing:
 - make - for local task automation
 - [docker](https://docs.docker.com/engine/install/) - for building the server
 - openssl - for generating TLS certificates for development and testing purposes (only needed if creating a new key pair, otherwise use existing set in the repository)
-- [minikube](https://minikube.sigs.k8s.io/docs/start/) (or similar tool) - for running a local kubernetes cluster to test the server on
+- [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) (or similar tool) - for running a local kubernetes cluster to test the server on
 
 #### Running
 Once the above requisite tooling has been setup, within the root of this
@@ -335,19 +367,19 @@ request that got merged so that the new version is automatically built.
 
 
 #### Local Deployment
-To deploy to your local Kubernetes cluster (assuming minikube), you can
+To deploy to your local Kubernetes cluster (assuming a `kind` cluster), you can
 run the following command to do so:
 
 ```shell
 make local-deploy
 ```
 
-Which shall build the server within the minikube VM so that it is made available
-for deployment via the included Helm chart.
+Which shall build the server for use with the `kind` cluster so that it is made
+available for deployment via the included Helm chart.
 
 
 To clean up the deployment, you can run:
 
 ```shell
-make local-deploy
+make local-deploy-clean
 ```
