@@ -59,18 +59,17 @@ Lists all of the deployments of the Kubernetes cluster by namespace
 
 
 *Response*
+Returns an object mapping the namespace to the deployment names.
+
 ```json
-[
-  {
-    "namespace": "default",
-    "deployments": [
-      "foo",
-      "yeet",
-      ...
-    ]
-  },
+{
+  "NAMESPACE_NAME": [
+    "DEPLOYMENT_A",
+    "DEPLOYMENT_B",
+    ...
+  ],
   ...
-]
+}
 ```
 
 | HTTP Status Code | Description |
