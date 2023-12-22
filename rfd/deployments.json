@@ -1,0 +1,18 @@
+{
+  "NAMESPACE_NAME": [
+    "DEPLOYMENT_A",
+    "DEPLOYMENT_B",
+    ...
+  ],
+  ...
+}
+
+{
+  "namespace": "default",
+  "deployment": "cool",
+  "replicas": 7
+}
+
+{
+  "status": "ready"
+}
